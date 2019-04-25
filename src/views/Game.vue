@@ -7,6 +7,42 @@ import Phaser from 'phaser'
 import wall from '../assets/wall.png'
 import ground from '../assets/ground.png'
 import player from '../assets/player.png'
+import coin from '../assets/coin.png'
+import enemy from '../assets/enemy.png'
+
+let score = 0
+let scoreText
+
+// TODO -> Detectar quan l'usuari surt del mon -> executar un die
+
+function die (player, enemy) {
+  // TODO -> MILLORAR AMB UNA ANIMACIÓ
+  player.disableBody(true, true)
+
+  // TODO -> EXECUTAR SO
+
+  // TODO -> SHAKE
+
+  // TODO REINICIAR NIVELL
+
+  // TODO: Display amb el número de vidas -> Mostrar el número de vidas i si l'has hem gastat aturar el joc
+
+  // TODO: Simular la explosió
+}
+
+function takeCoin (player, coin) {
+  // TODO -> MILLORAR AMB UNA ANIMACIÓ
+  coin.disableBody(true, true)
+  console.log('XIVATO')
+
+  score = score + 10
+
+  // this.add.text(10, 10, 'score: ' + score, { fontSize: '12px', fill: '#000' })
+  scoreText.setText('Score: ' + score)
+  // TODO -> EXECUTAR SO QUE PERTOCA (coin.mp3)
+
+  // TODO -> ACTUALITZAR COMPTADOR/SCORE DE PUNTS
+}
 
 export default {
   name: 'Game',
@@ -31,6 +67,9 @@ export default {
           this.load.image('wall', wall)
           this.load.image('ground', ground)
           this.load.spritesheet('player', player, { frameWidth: 28, frameHeight: 22 })
+
+          this.load.image('coin', coin)
+          this.load.image('enemy', enemy)
 
           // AUDIO
           // this.load.setBaseURL('http://labs.phaser.io')
@@ -75,6 +114,28 @@ export default {
             frameRate: 5,
             repeat: -1
           })
+
+          // ADD COINS
+          this.coins = this.physics.add.group()
+
+          this.coins.create(140, 200 / 2, 'coin')
+          this.coins.create(170, 200 / 2, 'coin')
+          this.coins.create(200, 200 / 2, 'coin')
+
+          this.physics.add.collider(this.coins, this.level)
+          this.physics.add.overlap(this.player, this.coins, takeCoin, null, this)
+
+          // SCORE
+          scoreText = this.add.text(10, 10, 'Score: 0', { fontSize: '12px', fill: '#000' })
+
+          // ENEMIES
+
+          this.enemies = this.physics.add.group()
+          this.enemies.create(500 / 2 + 130, 200 / 2, 'enemy')
+
+          this.physics.add.collider(this.enemies, this.level)
+          this.physics.add.overlap(this.player, this.enemies, die, null, this)
+
         },
         update () {
           this.player.anims.play('idle', true)
