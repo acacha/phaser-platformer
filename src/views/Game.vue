@@ -21,14 +21,20 @@ function die (player, enemy) {
 
   // TODO -> EXECUTAR SO
 
-  // TODO -> SHAKE
-
   // TODO REINICIAR NIVELL
+  // console.log(game)
+  // console.log(game.camera)
+  // console.log(player.scene)
+  // console.log(player.scene.game)
+  player.scene.cameras.main.shake(500)
 
   // TODO: Display amb el número de vidas -> Mostrar el número de vidas i si l'has hem gastat aturar el joc
 
   // TODO: Simular la explosió
 }
+
+// SHAKE EFFECT
+// http://labs.phaser.io/edit.html?src=src/camera/shake.js
 
 function takeCoin (player, coin) {
   // TODO -> MILLORAR AMB UNA ANIMACIÓ
@@ -136,6 +142,16 @@ export default {
           this.physics.add.collider(this.enemies, this.level)
           this.physics.add.overlap(this.player, this.enemies, die, null, this)
 
+          // PREPARE LOSER TEXT
+          this.loserText = this.add.text(500 / 2 - 50, 200 / 2 - 50, 'LOOSER!', { fontSize: '30px', fill: '#000' }).setVisible(false)
+
+          this.cameras.main.on('camerashakestart', () => {
+            this.loserText.setVisible(true)
+          })
+
+          this.cameras.main.on('camerashakecomplete', () => {
+            this.loserText.setVisible(false)
+          })
         },
         update () {
           this.player.anims.play('idle', true)
